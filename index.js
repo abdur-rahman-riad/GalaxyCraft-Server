@@ -26,6 +26,21 @@ async function run() {
         const database = client.db("galaxyCraft");
         const productsCollection = database.collection("products");
         const ordersCollection = database.collection("orders");
+
+        // Adding New Prroduct into Database
+        app.post('/products', async (req, res) => {
+            const newProduct = req.body;
+            const result = await productsCollection.insertOne(newProduct);
+            console.log(result);
+            res.json(result);
+        });
+
+        // Showing All Package into Home Page
+        app.get('/products', async (req, res) => {
+            const cursor = productsCollection.find({});
+            const productInfo = await cursor.toArray();
+            res.send(productInfo);
+        });
     }
     finally {
         // await client.connect();
