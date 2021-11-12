@@ -41,6 +41,36 @@ async function run() {
             const productInfo = await cursor.toArray();
             res.send(productInfo);
         });
+
+        // Showing Single Package Into Private Route
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const singleProduct = await productsCollection.findOne(query);
+            res.json(singleProduct);
+        });
+
+        // Confirm Orders
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.json(result);
+        });
+
+        // Showing Orders Into UI
+        app.get('/orders', async (req, res) => {
+            const cursor = ordersCollection.find({});
+            const orderProduct = await cursor.toArray();
+            res.send(orderProduct);
+        });
+
+        // Delete Orders
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            res.json(result);
+        });
     }
     finally {
         // await client.connect();
