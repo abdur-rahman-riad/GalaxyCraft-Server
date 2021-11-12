@@ -26,6 +26,7 @@ async function run() {
         const database = client.db("galaxyCraft");
         const productsCollection = database.collection("products");
         const ordersCollection = database.collection("orders");
+        const reviewsCollection = database.collection("reviews");
 
         // Adding New Prroduct into Database
         app.post('/products', async (req, res) => {
@@ -35,14 +36,14 @@ async function run() {
             res.json(result);
         });
 
-        // Showing All Package into Home Page
+        // Showing All Product into Home Page
         app.get('/products', async (req, res) => {
             const cursor = productsCollection.find({});
             const productInfo = await cursor.toArray();
             res.send(productInfo);
         });
 
-        // Showing Single Package Into Private Route
+        // Showing Single Product Into Private Route
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -84,6 +85,21 @@ async function run() {
         app.get('/orders/:userEmail', async (req, res) => {
             const result = await ordersCollection.find({ userEmail: req.params.userEmail }).toArray();
             res.send(result);
+        });
+
+        // Adding Review into Database
+        app.post('/reviews', async (req, res) => {
+            const newReview = req.body;
+            const result = await reviewsCollection.insertOne(newReview);
+            console.log(result);
+            res.json(result);
+        });
+
+        // Showing All Review into Home Page
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const review = await cursor.toArray();
+            res.send(review);
         });
     }
     finally {
